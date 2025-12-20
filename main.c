@@ -25,8 +25,8 @@ static int PL_HEIGHT= 200;
 //Structure for x and y axes speeds.We're using integer.
 //Use typdef to make an alias and use more readable declarations.
 typedef struct Speed {
-    float x;
-    float y;
+    int x;
+    int y;
 } Speed;
 
 typedef struct Ball {
@@ -48,6 +48,7 @@ void move_rect(SDL_Surface *surface,SDL_Rect *rect,Speed* speed,int player)
     rect->x += speed->x;
 
     //Print coordinates in the console for debugging
+    /*
     if(player==1){
         printf("y_pl1: %d\n",rect->y);
         printf("surface height= %d",surface->h);
@@ -56,8 +57,10 @@ void move_rect(SDL_Surface *surface,SDL_Rect *rect,Speed* speed,int player)
         printf("surface height= %d",surface->h);
         
     }else{
-        printf("x_Ball: %d\n",rect->x);
+        printf("x_speed_Ball: %d\n",speed->x);
+        printf("y_speed_Ball: %d\n",speed->y);
     }
+        */
     //Re-draw the rectangle  
     SDL_FillRect(surface, rect, 0xffffffff);
 }
@@ -70,26 +73,37 @@ void move_ball(SDL_Surface* surface, SDL_Rect* ball,SDL_Rect* player1, SDL_Rect*
             //change to opposite direction on x axis
             ball_speed->x = -ball_speed->x; 
             //Normalize Y axis movement
-            double hit_fraction = ((double)(ball->y+ball->h)/ (double) 2 - (double)(player1->y + player1->h)/ (double) 2)/ ((double) PL_HEIGHT / 2);
+            double hit_fraction = ((double)(ball->y+(ball->h/ (double) 2)) - (double)(player1->y + (player1->h/(double) 2)))/ ((double) PL_HEIGHT / 2);
+            printf("hit fraction: %f\n",hit_fraction);
             //Apply normalization to ball speed on y axis
-            ball_speed->y = (double)(hit_fraction * (double) MOVEMENT_SPEED);
+            ball_speed->y = (double)(hit_fraction * (double)MOVEMENT_SPEED );
+            printf("ball_speed_y: %f\n",ball_speed->y);
 
         }
 
     }
-    //Bounce back the ball when in contact with player one.
+    //Bounce back the ball when in contact with player two.
     if(ball->x + ball->w >= RIGHT_INNER_BORDER){
         if(((ball->y + ball->h) > player2->y) && (ball->y < player2->y + player2->h)){
             ball_speed->x = -ball_speed->x;
+
+             //Normalize Y axis movement
+            double hit_fraction = ((double)(ball->y+(ball->h/ (double) 2)) - (double)(player2->y + (player2->h/(double) 2)))/ ((double) PL_HEIGHT / 2);
+            printf("hit fraction: %f",hit_fraction);
+            //Apply normalization to ball speed on y axis
+            ball_speed->y = (double)(hit_fraction * (double)MOVEMENT_SPEED);
+            printf("ball_speed_y: %f\n",ball_speed->y);
         }
     }
+    //Use to slower ball's speed.
+    SDL_Delay(1);
     move_rect(surface, ball, ball_speed,3);
 }
+
 /*Direction shall be +-1 */
 void move_player(SDL_Surface* surface,SDL_Rect* player,int direction, int player_number){
 
-    //TODO players stay blocked after reaching border.
-    //54.39
+    
     if(direction < 0 && player->y <= 0){
         //player->y=player->y+5;
 
