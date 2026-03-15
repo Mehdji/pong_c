@@ -76,7 +76,7 @@ void move_ball(SDL_Surface* surface, SDL_Rect* ball,SDL_Rect* player1, SDL_Rect*
             double hit_fraction = ((double)(ball->y+(ball->h/ (double) 2)) - (double)(player1->y + (player1->h/(double) 2)))/ ((double) PL_HEIGHT / 2);
             printf("hit fraction: %f\n",hit_fraction);
             //Apply normalization to ball speed on y axis
-            ball_speed->y = (double)(hit_fraction * (double)MOVEMENT_SPEED );
+            ball_speed->y = ((double)((hit_fraction) * (double)MOVEMENT_SPEED )/8);
             printf("ball_speed_y: %f\n",ball_speed->y);
 
         }
